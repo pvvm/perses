@@ -1,41 +1,47 @@
-#elements = {0: [1, 0.2], 1: [0, 0.1], 2: [1, 0.4], 3: [0, 0.34], 4: [0, 0.53], 5: [1, 0.1], 6: [1, 0.21], 7: [0, 0.05]}
+import random
 
-#elements = {0: [1, 0.25], 1: [1, 0.25], 2: [1, 0.25], 3: [1, 0.25], 4: [1, 0.25], 5: [1, 0.25], 6: [1, 0.25], 7: [1, 0.25]}
-#elements = {0: [1, 0.3657], 1: [1, 0.3657], 2: [1, 0.3657], 3: [0, 0], 4: [0, 0], 5: [0, 0], 6: [0, 0], 7: [1, 0.3657]}
-#elements = {0: [1, 0.6119], 1: [0, 0], 2: [1, 0.6119], 3: [0, 0], 4: [0, 0], 5: [0, 0], 6: [0, 0], 7: [1, 0.6119]}
-elements = {0: [0, 0], 1: [0, 0], 2: [1, 1], 3: [0, 0], 4: [0, 0], 5: [0, 0], 6: [0, 0], 7: [1, 0.6119]}
+def randomize_sort(elements):
+    keys = list(elements.keys())
+    random.shuffle(keys)
+    aux = dict()
+    for k in keys:
+        aux[k] = elements[k]
 
+    #print(aux)
+    return dict(sorted(aux.items(), key=lambda x:x[1][1]))
 
-print(elements)
-
-elements = dict(sorted(elements.items(), key=lambda x:x[1][1]))
-
-last_gain = 0
-
-ex = 0
-
-for e in elements:
-    if elements[e][1] > 0:
-        ex += 1
-
+def product_calc(elements):
     product = 1
     for j in range(len(elements)):
         product *= (1 - elements[j][1])**(1 - elements[j][0])
-    print(product)
-    
-    current_gain = ex * product
-    print(current_gain)
-    if last_gain > current_gain:
-        break
-    print(e)
+    return product
 
-    elements[e][0] = 0 # step 2
+def max_gain(elements):
+    last_gain = 0
+    ex = 0
+    for e in elements:
+        if elements[e][1] > 0:
+            ex += 1
 
-    last_gain = current_gain
+        current_gain = ex * product_calc(elements)
+
+        if last_gain > current_gain:
+            #print(last_gain)
+            return dict(sorted(elements.items()))
+
+        elements[e][0] = 0 # step 2
+        last_gain = current_gain
+
+def main():
+    #elements = {0: [1, 0.25], 1: [1, 0.25], 2: [1, 0.25], 3: [1, 0.25], 4: [1, 0.25], 5: [1, 0.25], 6: [1, 0.25], 7: [1, 0.25]}
+    elements = {0: [1, 0.3657], 1: [1, 0.3657], 2: [1, 0.3657], 3: [0, 0], 4: [0, 0], 5: [0, 0], 6: [0, 0], 7: [1, 0.3657]}
+    #elements = {0: [1, 0.6119], 1: [0, 0], 2: [1, 0.6119], 3: [0, 0], 4: [0, 0], 5: [0, 0], 6: [0, 0], 7: [1, 0.6119]}
+    #elements = {0: [0, 0], 1: [0, 0], 2: [1, 1], 3: [0, 0], 4: [0, 0], 5: [0, 0], 6: [0, 0], 7: [1, 0.6119]}
+
+    elements = randomize_sort(elements)
+    elements = max_gain(elements)
+    print(elements)
 
 
-    print(ex)
-
-elements = dict(sorted(elements.items()))
-print(last_gain)
-print(elements)
+if __name__ == "__main__":
+    main()
