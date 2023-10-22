@@ -12,8 +12,8 @@ def randomize_sort(elements):
 
 def product_calc(elements):
     product = 1
-    for j in range(len(elements)):
-        product *= (1 - elements[j][1])**(1 - elements[j][0])
+    for e in elements:
+        product *= (1 - elements[e][1])**(1 - elements[e][0])
     return product
 
 def max_gain(elements):
