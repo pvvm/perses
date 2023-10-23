@@ -1,3 +1,10 @@
+def CheckCondition(elements):
+    for e in elements:
+        if e[1] != 0.0 or e[1] != 1.0:
+            return False
+    
+    return True
+
 # "elements" is the list of elements to be reduced.
 # "targets" is the list of element indices that are excluded subsequence.
 # "result" is the test outcome if it satisfied the test or not with exclusion.
