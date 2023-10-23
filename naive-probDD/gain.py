@@ -26,11 +26,12 @@ def max_gain(elements):
         current_gain = ex * product_calc(elements)
 
         if last_gain > current_gain:
-            #print(last_gain)
-            return dict(sorted(elements.items()))
+            break
 
         elements[e][0] = 0 # step 2
         last_gain = current_gain
+
+    return dict(sorted(elements.items()))
 
 def main():
     #elements = {0: [1, 0.25], 1: [1, 0.25], 2: [1, 0.25], 3: [1, 0.25], 4: [1, 0.25], 5: [1, 0.25], 6: [1, 0.25], 7: [1, 0.25]}
