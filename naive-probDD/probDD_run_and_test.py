@@ -15,7 +15,7 @@ def AdjustProbs(elements, result):
     if result:
         for i in elements:
             if elements[i][0] == 0:
-                elements[i][1] = 1
+                elements[i][1] = 0
     else:
         product = 1.0
         for j in elements:
