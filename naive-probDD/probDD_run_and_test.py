@@ -1,6 +1,12 @@
 import subprocess
 from test.generate_random_test import generate_test
 
+def CheckCondition(elements):
+    for e in elements:
+        if e[1] != 0.0 or e[1] != 1.0:
+            return False
+    return True
+
 # "elements" is the list of elements to be reduced.
 # "result" is the test outcome if it satisfied the test or not with exclusion.
 def AdjustProbs(elements, result):
