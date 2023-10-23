@@ -1,11 +1,46 @@
 import subprocess
+import random
 from test.generate_random_test import generate_test
 
-def CheckCondition(elements):
+def randomize_sort(elements):
+    keys = list(elements.keys())
+    random.shuffle(keys)
+    aux = dict()
+    for k in keys:
+        aux[k] = elements[k]
+
+    #print(aux)
+    return dict(sorted(aux.items(), key=lambda x:x[1][1]))
+
+def product_calc(elements):
+    product = 1
     for e in elements:
-        if e[1] != 0.0 or e[1] != 1.0:
-            return False
-    return True
+        product *= (1 - elements[e][1])**(1 - elements[e][0])
+    return product
+
+def max_gain(elements):
+    last_gain = 0
+    ex = 0
+    for e in elements:
+        if elements[e][1] > 0:
+            ex += 1
+
+        current_gain = ex * product_calc(elements)
+
+        if last_gain > current_gain:
+            break
+
+        elements[e][0] = 0 # step 2
+        last_gain = current_gain
+
+    return dict(sorted(elements.items(), key=lambda x:x[1][2]))
+
+# Is this used anywhere?
+#def CheckCondition(elements):
+#    for e in elements:
+#        if e[1] != 0.0 or e[1] != 1.0:
+#            return False
+#    return True
 
 # "elements" is the list of elements to be reduced.
 # "result" is the test outcome if it satisfied the test or not with exclusion.
@@ -25,11 +60,11 @@ def AdjustProbs(elements, result):
                 elements[i][1] /= (1 - product)
         
 
-def probDD(sequence, test_function):
+#def probDD(sequence, test_function):
     # probabilities of each element in the optimal solution
-    probabilities = sequence.copy()
+#    probabilities = sequence.copy()
     # current optimal solution
-    next_test_sequence = sequence.copy()
+#    next_test_sequence = sequence.copy()
 
     #while CheckCondition(probabilities) is False:
         # calculate gain and find the next test to run
@@ -46,8 +81,11 @@ def extract_lines(file_name):
     initial_probability = 0.25
     elements = dict()
     f = open(file_name, "r")
+    id = 0
     for line in f:
-        elements[line] = [1, initial_probability]
+        elements[line] = [1, initial_probability, id]
+        id += 1
+
     f.close()
     return elements
 
@@ -71,7 +109,7 @@ def check_minimality(elements):
     return 1
 
 
-def test():
+def probDD():
     # write a test function to invoke python3 on "test{#i}_reduction.py" and check for divisionByZero
     # generate tests
     number_tests = 3
@@ -85,24 +123,28 @@ def test():
         # 1. extract lines from the file as sequence
         elements = extract_lines(original_name)
 
-        #while True:
+        while True:
+            print(elements)
+            # 2. check 1-minimality
+            if check_minimality(elements):
+                break
+            
+            # 3. write the reduced test
+            write_reduced(reduced_name, elements)
+            
+            # 4. execute the reduced test
+            result = execute_reduced(reduced_name)
+            
+            # 5. adjust the probabilities according the reduced program's result (T or F)
+            AdjustProbs(elements, result)
 
-        # 2. check 1-minimality
-        if check_minimality(elements):
-            break
-        
-        # 3. write the reduced test
-        write_reduced(reduced_name, elements)
-        
-        # 4. execute the reduced test
-        result = execute_reduced(reduced_name)
-        
-        # 5. adjust the probabilities according the reduced program's result (T or F)
-        AdjustProbs(elements, result)
+            # 6. randomize the order of the elements and sort by probability
+            elements = randomize_sort(elements)
 
-        # 6. find the next subsequence (through maximum gain)
+            # 7. find the next subsequence (through maximum gain)
+            elements = max_gain(elements)
 
-test()
+probDD()
 #execute_reduced("test/test1_reduction.py")
 #execute_reduced("test/test2_reduction.py")
 #execute_reduced("test/test3_reduction.py")
