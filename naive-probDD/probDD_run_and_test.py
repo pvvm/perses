@@ -4,16 +4,19 @@ from test.generate_random_test import generate_test
 # "elements" is the list of elements to be reduced.
 # "result" is the test outcome if it satisfied the test or not with exclusion.
 def AdjustProbs(elements, result):
-    for i in elements:
-        # result F == 0, T == 1
-        # excluded elements[i][0] == 0, in the subsequence == 1
-        if result and (not elements[i][0]):
-            elements[i][1] = 0
-        elif (not result) and (not elements[i][0]):
-            product = 1.0
-            for j in elements:
-                product *= ((1.0 - elements[j][1]) ** (1.0 - elements[j][0]))
-            elements[i][1] /= (1 - product)
+    # result F == 0, T == 1
+    # excluded elements[i][0] == 0, in the subsequence == 1
+    if result:
+        for i in elements:
+            if elements[i][0] == 0:
+                elements[i][1] = 1
+    else:
+        product = 1.0
+        for j in elements:
+            product *= (1.0 - elements[j][1]) ** (1 - elements[j][0])
+        for i in elements:
+            if elements[i][0] == 0 and elements[i][1] != 0.0:
+                elements[i][1] /= (1 - product)
         
 
 def probDD(sequence, test_function):
