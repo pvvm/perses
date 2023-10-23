@@ -65,20 +65,17 @@ def generate_random_test(filename):
             test_string += generate_random_statement()
         test_string += '\n'
         i += 1
-    f = open(filename, "w")
+    f = open("test/" + filename, "w")
     f.write(test_string)
     f.close()
 
-def main():
-    args = sys.argv[1:]
-    if len(args) != 1:
-        print("Usage: python3 generate_random_test.py [int]")
-    else:
-        test_number = int(args[0])
-        for i in range(test_number):
-            filename = "test" + str(i+1) + ".py"
-            random.seed()
-            generate_random_test(filename)
-
-if __name__ == "__main__":
-    main()
+def generate_test(number):
+    #args = sys.argv[1:]
+    #if number != 1:
+    #    print("Usage: python3 generate_random_test.py [int]")
+    #else:
+        #test_number = int(args[0])
+    for i in range(number):
+        filename = "test" + str(i+1) + ".py"
+        random.seed()
+        generate_random_test(filename)
